@@ -50,26 +50,19 @@ const projects: Array<{
     {
         title: "Thugs vs Police",
         description: "simple & chaotic FPS game made in 9 days",
-        icon: "",
+        icon: "🔫",
         link: "https://www.roblox.com/games/89186215794284/Thugs-vs-Police",
         tags: ["roblox", "full game"],
         banner: "https://tr.rbxcdn.com/180DAY-0ad3b7755d937d8cadbdbf38b1461431/768/432/Image/Webp/noFilter",
     },
     {
         title: "UFO Race",
-        description: "self explanatory",
-        icon: "",
+        description:
+            "an incremental game where the goal is to go as far as possible",
+        icon: "🛸",
         link: "https://www.roblox.com/games/117834676933040/UFO-Race",
         tags: ["roblox", "full game"],
         banner: "https://tr.rbxcdn.com/180DAY-1a64db5894d44af4e6c0dcaacdd6e91e/768/432/Image/Png/noFilter",
-    },
-    {
-        title: "Toilet Vanguard",
-        description: "uhm.. yeah",
-        icon: "",
-        link: "https://www.roblox.com/games/18649337822/Toilet-Vanguard",
-        tags: ["roblox", "full game"],
-        banner: "https://tr.rbxcdn.com/180DAY-d0df428671161dd0ff2e30ac6bd3d234/768/432/Image/Webp/noFilter",
     },
 ];
 ---
@@ -85,32 +78,70 @@ const projects: Array<{
                     <div class="space-y-4 sm:space-y-2">
                         <div class="flex items-center gap-3 mb-4">
                             <div class="flex flex-col gap-1">
-                                <h1 class="text-2xl">
-                                    🪴 hi, I'm <span
-                                        class="text-primary font-medium"
-                                        >xnlogical</span
-                                    >
-                                </h1>
+                                <h1 class="text-2xl">🪴 hello visitor</h1>
                                 <p class="text-muted text-xs">
-                                    systems programmer and freelance game
+                                    // xnlogical • systems programmer & game
                                     developer
                                 </p>
                             </div>
                         </div>
 
                         <!-- Personal paragraph -->
-                        <div
-                            class="bg-gray-200/50 dark:bg-gray-500/10 rounded-lg p-3 mb-4"
-                        >
-                            <p class="text-primary leading-relaxed"></p>
-                        </div>
+                        <p class="text-sm leading-relaxed">
+                            I've always had a way with computers, even as an <b
+                                >8 year old</b
+                            > in primary school, I quite enjoyed building silly games
+                            with <b>Scratch</b>.
 
-                        <Divider class="mb-2" />
+                            <br />
+                            <br />
+
+                            In <b>2023</b>, at the <b>age of 14</b>, I started
+                            learning <b>Luau</b> to make Roblox games with a friend.
+                            This grew into freelancing, and eventually into a curiosity
+                            about what lay beyond the Roblox ecosystem; so I started
+                            learning <b>C, C++, and later Rust</b>, which made
+                            me fall in love with the intricacy and depth of
+                            <b>systems programming</b>.
+
+                            <br />
+                            <br />
+
+                            <b>Depth</b>, to me, means not stopping at the
+                            abstraction, it means understanding what it hides
+                            all the way down to the silicon. This is why I think
+                            correctness and safety aren't optional, they're the
+                            whole point. I believe this to be leading the ills
+                            of modern programming.
+
+                            <br />
+                            <br />
+
+                            I started <a href="https://github.com/via-lang/via"
+                                ><u><b>the via programming language</b></u></a
+                            > for this exact reason. Working with <b>Luau</b> and
+                            <b>JavaScript</b>
+                            made me realize there was no embeddable language that
+                            took safety as a first class design choice. Technologies
+                            like
+                            <b>TypeScript</b>, <b>roblox-ts</b>, and even <b
+                                >Luau</b
+                            > itself gesture at correctness, but they're building
+                            safety on top of foundations that were never designed
+                            for it.
+                        </p>
+
+                        <br />
 
                         <InfoRow label="location">Turkey 🇹🇷</InfoRow>
 
-                        <InfoRow label="main hobby">
-                            programming (obviously)
+                        <InfoRow label="hobbies">
+                            cinema, philosophy, gaming
+                        </InfoRow>
+
+                        <InfoRow label="interests">
+                            compilers, interpreters, game engines, open source,
+                            operating systems, computer science, math, physics
                         </InfoRow>
 
                         <InfoRow label="current project">
@@ -122,18 +153,12 @@ const projects: Array<{
                             </ExternalLink>
                         </InfoRow>
 
-                        <InfoRow label="main interests">
-                            linux, compilers, interpreters, PL design, game
-                            engines, open source
-                        </InfoRow>
-
                         <InfoRow label="contact">
                             <a
                                 class="text-accent hover:underline focus:outline-none"
                                 href="mailto:xnlogical@gmail.com"
                                 aria-label="Send email to site author"
-                                >xnlogical on discord <br /> xnlogical [at] gmail
-                                (dot) com
+                                >discord • xnlogical (prefered) <br /> email • xnlogical@gmail.com
                             </a>
                         </InfoRow>
 
@@ -153,7 +178,7 @@ const projects: Array<{
                 role="region"
                 aria-label="Project showcase"
             >
-                <SectionHeading>my projects</SectionHeading>
+                <SectionHeading>my indie projects</SectionHeading>
                 <div class="space-y-2" role="list">
                     {
                         projects.map((project, index) => (
