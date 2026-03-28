@@ -4,6 +4,6 @@ import { defineConfig } from "astro/config";
 
 export default defineConfig({
     integrations: [sitemap(), tailwind()],
-    site: "https://xnlogical.github.io/portfolio",
+    site: "https://xnlogical.github.io",
     compressHTML: true,
 });
