@@ -1,0 +1,442 @@
+---
+import Button from "../components/ui/Button.astro";
+import Card from "../components/ui/Card.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+interface WizardOption {
+    id: string;
+    label: string;
+    min: number;
+    max: number;
+    days: number;
+    multiplier?: number;
+    nextStep?: string;
+}
+
+interface WizardStep {
+    id: string;
+    title: string;
+    question: string;
+    type: "single" | "multi";
+    nextStep?: string;
+    options: WizardOption[];
+}
+
+const wizardSteps: WizardStep[] = [
+    {
+        id: "core-platform",
+        title: "Platform Foundation",
+        question: "Select your primary system core configuration architecture:",
+        type: "single",
+        options: [
+            {
+                id: "saas",
+                label: "Multi-tenant SaaS Application",
+                min: 3000,
+                max: 5000,
+                days: 30,
+                nextStep: "addons",
+            },
+            {
+                id: "mobile",
+                label: "Native Cross-Platform Mobile App",
+                min: 4000,
+                max: 6500,
+                days: 45,
+                nextStep: "addons",
+            },
+            {
+                id: "marketing",
+                label: "High-Conversion Marketing Hub",
+                min: 1000,
+                max: 1500,
+                days: 12,
+                nextStep: "addons",
+            },
+        ],
+    },
+    {
+        id: "addons",
+        title: "System Add-ons",
+        question:
+            "Select engineering packages to inject into the target build:",
+        type: "multi",
+        nextStep: "timeline",
+        options: [
+            {
+                id: "security",
+                label: "Advanced Penetration Shielding & Auditing",
+                min: 800,
+                max: 1200,
+                days: 5,
+            },
+            {
+                id: "analytics",
+                label: "Realtime Event Telemetry Matrix",
+                min: 400,
+                max: 600,
+                days: 3,
+            },
+            {
+                id: "localization",
+                label: "Dynamic Multilingual Translation Engine",
+                min: 300,
+                max: 450,
+                days: 4,
+            },
+        ],
+    },
+    {
+        id: "timeline",
+        title: "Deployment Delivery Velocity",
+        question:
+            "Choose your engineering sprint schedule (Applies multiplier matrix):",
+        type: "single",
+        nextStep: "summary",
+        options: [
+            {
+                id: "standard",
+                label: "Standard Delivery (Normal Sprint Cadence)",
+                min: 0,
+                max: 0,
+                days: 0,
+                multiplier: 1.0,
+            },
+            {
+                id: "expedited",
+                label: "Expedited Delivery (Overtime Sprints)",
+                min: 500,
+                max: 800,
+                days: -5,
+                multiplier: 1.25,
+            },
+            {
+                id: "rush",
+                label: "Critical Rush (24/7 Priority Execution)",
+                min: 1200,
+                max: 2000,
+                days: -10,
+                multiplier: 1.5,
+            },
+        ],
+    },
+];
+---
+
+<BaseLayout activeNavbarItemID="pricing">
+    <main class="flex justify-center">
+        <Card class="container w-full max-w-2xl px-2">
+            <div id="wizard-container">
+                <div
+                    class="flex items-center gap-1 mb-6 border-b pb-3"
+                    style="border-color: var(--color-card-border);"
+                >
+                    <span
+                        id="step-badge"
+                        class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-[var(--color-tag-bg)] text-[var(--color-tag-text)] border border-[var(--color-tag-border)]"
+                    >
+                        Initialization
+                    </span>
+                    <h3
+                        id="step-title"
+                        class="text-sm font-bold tracking-tight text-[var(--color-primary)] ml-2"
+                    >
+                        ---
+                    </h3>
+                </div>
+
+                {/* ── ACTIVE INPUT SLOTS ── */}
+                <form id="wizard-form" autocomplete="off">
+                    {
+                        wizardSteps.map((step) => (
+                            <div
+                                id={`wizard-step-${step.id}`}
+                                class="wizard-step-panel hidden space-y-4"
+                                data-step-type={step.type}
+                                data-global-next={step.nextStep}
+                            >
+                                <p
+                                    class="text-sm font-medium"
+                                    style="color: var(--color-card-text);"
+                                >
+                                    {step.question}
+                                </p>
+
+                                <div class="grid grid-cols-1 gap-2">
+                                    {step.options.map((opt) => (
+                                        <label
+                                            class="flex items-center justify-between p-3 rounded-xl border cursor-pointer select-none transition-all duration-200 bg-[var(--color-surface)] hover:bg-[var(--color-tag-bg)]/20"
+                                            style="border-color: var(--color-card-border);"
+                                        >
+                                            <div class="flex items-center gap-3">
+                                                <input
+                                                    type={
+                                                        step.type === "multi"
+                                                            ? "checkbox"
+                                                            : "radio"
+                                                    }
+                                                    name={step.id}
+                                                    value={opt.id}
+                                                    data-min={opt.min}
+                                                    data-max={opt.max}
+                                                    data-days={opt.days}
+                                                    data-multiplier={
+                                                        opt.multiplier || 1.0
+                                                    }
+                                                    data-next={opt.nextStep}
+                                                    class="w-4 h-4 accent-[var(--color-accent)] bg-black/40 border-[var(--color-card-border)] focus:ring-0"
+                                                />
+                                                <div class="flex flex-col">
+                                                    <span class="text-xs font-mono text-[var(--color-card-text)]">
+                                                        {opt.label}
+                                                    </span>
+                                                    <span class="text-[10px] text-[var(--color-muted)] font-mono mt-0.5">
+                                                        {opt.days !== 0
+                                                            ? `${opt.days > 0 ? "+" : ""}${opt.days} Days`
+                                                            : "No timeline delta"}
+                                                        {opt.multiplier &&
+                                                        opt.multiplier > 1
+                                                            ? ` • ${opt.multiplier}x Global Fee`
+                                                            : ""}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <span class="font-mono text-xs font-bold text-[var(--color-accent)]">
+                                                {opt.min === 0 && opt.max === 0
+                                                    ? "Included"
+                                                    : `$${opt.min}-$${opt.max}`}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        ))
+                    }
+                </form>
+
+                {/* ── LIVE MULTI-DIMENSIONAL ESTIMATION PANEL ── */}
+                <div
+                    class="grid grid-cols-2 gap-3 p-4 rounded-xl border mt-8"
+                    style="border-color: var(--color-card-border); background-color: var(--color-surface);"
+                >
+                    <div>
+                        <span
+                            class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-muted)] block"
+                            >Valuation Range</span
+                        >
+                        <span
+                            id="wizard-total-range"
+                            class="text-lg font-black text-[var(--color-accent)]"
+                            >$0 - $0</span
+                        >
+                    </div>
+                    <div
+                        class="border-l pl-4"
+                        style="border-color: var(--color-card-border);"
+                    >
+                        <span
+                            class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-muted)] block"
+                            >Estimated Delivery</span
+                        >
+                        <span
+                            id="wizard-timeline"
+                            class="text-lg font-black text-[var(--color-primary)] font-mono"
+                            >0 Days</span
+                        >
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 mt-4">
+                    <Button id="wizard-prev-btn"> ← Previous </Button>
+                    <Button id="wizard-next-btn"> Next → </Button>
+                </div>
+            </div>
+        </Card>
+
+        <script define:vars={{ wizardSteps }}>
+            function initAdvancedWizard() {
+                const form = document.getElementById("wizard-form");
+                const rangeDisplay =
+                    document.getElementById("wizard-total-range");
+                const timelineDisplay =
+                    document.getElementById("wizard-timeline");
+                const prevBtn = document.getElementById("wizard-prev-btn");
+                const nextBtn = document.getElementById("wizard-next-btn");
+                const stepBadge = document.getElementById("step-badge");
+                const stepTitle = document.getElementById("step-title");
+
+                if (
+                    !form ||
+                    !rangeDisplay ||
+                    !timelineDisplay ||
+                    !prevBtn ||
+                    !nextBtn
+                )
+                    return;
+
+                let stepHistory = [wizardSteps[0].id];
+
+                function renderCurrentState() {
+                    const currentStepId = stepHistory[stepHistory.length - 1];
+                    const currentConfig = wizardSteps.find(
+                        (s) => s.id === currentStepId,
+                    );
+
+                    document
+                        .querySelectorAll(".wizard-step-panel")
+                        .forEach((p) => p.classList.add("hidden"));
+
+                    const activePanel = document.getElementById(
+                        `wizard-step-${currentStepId}`,
+                    );
+                    if (!activePanel) {
+                        stepBadge.textContent = "Complete";
+                        stepTitle.textContent =
+                            "Final Scope Manifest Calculation";
+                        nextBtn.textContent = "Deploy Configuration 🚀";
+                        nextBtn.disabled = true;
+                        return;
+                    }
+
+                    activePanel.classList.remove("hidden");
+
+                    stepBadge.textContent = `Step ${stepHistory.length.toString().padStart(2, "0")}`;
+                    stepTitle.textContent = currentConfig.title;
+
+                    prevBtn.disabled = stepHistory.length === 1;
+                    nextBtn.textContent =
+                        currentConfig.nextStep === "summary" ||
+                        (!currentConfig.nextStep &&
+                            activePanel.querySelector(
+                                "input[data-next='summary']",
+                            ))
+                            ? "<disable>"
+                            : "Next →";
+
+                    nextBtn.disabled = nextBtn.textContent === "<disable>";
+
+                    tallyCalculations();
+                }
+
+                function tallyCalculations() {
+                    let baseMin = 0;
+                    let baseMax = 0;
+                    let totalDays = 0;
+                    let absoluteMultiplier = 1.0;
+
+                    const checkedElements =
+                        form.querySelectorAll("input:checked");
+
+                    // Reset borders
+                    form.querySelectorAll("label").forEach((l) => {
+                        l.style.borderColor = "var(--color-card-border)";
+                        l.style.background = "var(--color-surface)";
+                    });
+
+                    // Pass 1: Parse Flat Minimums, Maximums, and Timelines
+                    checkedElements.forEach((input) => {
+                        baseMin += parseFloat(
+                            input.getAttribute("data-min") || "0",
+                        );
+                        baseMax += parseFloat(
+                            input.getAttribute("data-max") || "0",
+                        );
+                        totalDays += parseInt(
+                            input.getAttribute("data-days") || "0",
+                        );
+
+                        // Accumulate/Override multiplier factors based on execution options
+                        const choiceMultiplier = parseFloat(
+                            input.getAttribute("data-multiplier") || "1.0",
+                        );
+                        if (choiceMultiplier !== 1.0) {
+                            absoluteMultiplier = choiceMultiplier;
+                        }
+
+                        const label = input.closest("label");
+                        if (label) {
+                            label.style.borderColor = "var(--color-accent)";
+                            label.style.background = "var(--color-tag-bg)";
+                        }
+                    });
+
+                    // Pass 2: Process Global Multipliers safely across ranges
+                    const finalMin = Math.round(baseMin * absoluteMultiplier);
+                    const finalMax = Math.round(baseMax * absoluteMultiplier);
+
+                    // Ensure baseline execution limits don't output structurally impossible schedules
+                    const safeDays = Math.max(3, totalDays);
+
+                    // Render calculations out to DOM hooks
+                    rangeDisplay.textContent = `$${finalMin.toLocaleString()} - $${finalMax.toLocaleString()}`;
+                    timelineDisplay.textContent = `${safeDays} Days`;
+                }
+
+                // Navigation Loop Interceptors
+                nextBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const currentStepId = stepHistory[stepHistory.length - 1];
+                    const activePanel = document.getElementById(
+                        `wizard-step-${currentStepId}`,
+                    );
+                    if (!activePanel) return;
+
+                    const selectedInputs =
+                        activePanel.querySelectorAll("input:checked");
+
+                    if (selectedInputs.length === 0) {
+                        activePanel.style.animation = "shake 0.3s ease-in-out";
+                        setTimeout(
+                            () => (activePanel.style.animation = ""),
+                            300,
+                        );
+                        return;
+                    }
+
+                    let targetNextNode = null;
+                    const stepType = activePanel.dataset.stepType;
+
+                    if (stepType === "single") {
+                        targetNextNode =
+                            selectedInputs[0].getAttribute("data-next");
+                    } else {
+                        targetNextNode = activePanel.dataset.globalNext;
+                    }
+
+                    if (targetNextNode) {
+                        stepHistory.push(targetNextNode);
+                        renderCurrentState();
+                    }
+                });
+
+                prevBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    if (stepHistory.length > 1) {
+                        stepHistory.pop();
+                        renderCurrentState();
+                    }
+                });
+
+                form.addEventListener("change", tallyCalculations);
+                renderCurrentState();
+            }
+
+            document.addEventListener("astro:page-load", initAdvancedWizard);
+        </script>
+
+        <style>
+            @keyframes shake {
+                0%,
+                100% {
+                    transform: translateX(0);
+                }
+                25% {
+                    transform: translateX(-4px);
+                }
+                75% {
+                    transform: translateX(4px);
+                }
+            }
+        </style>
+    </main>
+</BaseLayout>

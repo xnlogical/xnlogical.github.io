@@ -5,20 +5,19 @@ import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 export interface Props {
-  title: string;
-  description: string;
-  image?: string;
-  article?: boolean;
+    title: string;
+    description: string;
+    image?: string;
+    article?: boolean;
 }
 
 const {
-  title,
-  description,
-  image = "/share.jpg",
-  article = false,
+    title,
+    description,
+    image = "/share.jpg",
+    article = false,
 } = Astro.props;
 
-const isProd = import.meta.env.PROD;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -35,8 +34,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 <!-- Robots -->
 <meta
-  name="robots"
-  content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    name="robots"
+    content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 />
 
 <!-- Favicon -->
@@ -63,23 +62,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
 <script>
-  function onKonamiCode(cb: { (): void; (): any }) {
-    var input = "";
-    var key = "38384040373937396665";
-    document.addEventListener("keydown", function (e) {
-      input += "" + e.keyCode;
-      if (input === key) {
-        return cb();
-      }
-      if (!key.indexOf(input)) return;
-      input = "" + e.keyCode;
-    });
-  }
+    function onKonamiCode(cb: { (): void; (): any }) {
+        var input = "";
+        var key = "38384040373937396665";
+        document.addEventListener("keydown", function (e) {
+            input += "" + e.keyCode;
+            if (input === key) {
+                return cb();
+            }
+            if (!key.indexOf(input)) return;
+            input = "" + e.keyCode;
+        });
+    }
 
-  onKonamiCode(function () {
-    // REDIRECT TO HAPPY PATH
-    window.location.href = "/happy";
-  });
+    onKonamiCode(function () {
+        // REDIRECT TO HAPPY PATH
+        window.location.href = "/happy";
+    });
 </script>
 
 <ClientRouter />

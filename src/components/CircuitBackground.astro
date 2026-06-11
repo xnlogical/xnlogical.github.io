@@ -564,7 +564,6 @@
         }
 
         function init() {
-            updateThemeColors();
             window.addEventListener("resize", resize);
             window.addEventListener("theme-change", () => {
                 updateThemeColors();
@@ -576,6 +575,10 @@
 
             resize();
             animate();
+
+            setTimeout(() => {
+                updateThemeColors();
+            }, 150);
         }
 
         init();

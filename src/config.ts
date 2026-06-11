@@ -14,25 +14,31 @@ export interface NavLink {
 
 export const NAV_LINKS: NavLink[] = [
     {
-        title: "home",
+        title: "Home",
         id: "home",
         url: "/",
         tooltip: "Home",
     },
     {
-        title: "gallery",
+        title: "Pricing",
+        id: "pricing",
+        url: "/pricing",
+        tooltip: "Pricing",
+    },
+    {
+        title: "Gallery",
         id: "gallery",
         url: "/gallery",
         tooltip: "Gallery",
     },
     {
-        title: "tos",
+        title: "ToS",
         id: "tos",
         url: "/tos",
         tooltip: "Terms of Service",
     },
     {
-        title: "blog",
+        title: "Blog",
         id: "blog",
         url: "/blog",
         tooltip: "Posts and stuff",

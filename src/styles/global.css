@@ -1,39 +1,43 @@
 html {
-  font-size: 16px;
+    font-family: "JetBrains Mono";
+    font-size: 16px;
 }
 
-/* Theme CSS Custom Properties */
 :root {
-  /* Light theme (default) */
-  --color-background: #f7f4ef;
-  --color-surface: #fffaf5;
-  --color-primary: #18181b;
-  --color-secondary: #3f3f46;
-  --color-accent: #d5601d;
-  --color-muted: #71717a;
-}
+    --color-background: #09090b;
+    --color-surface: #18181b;
+    --color-primary: #f4f4f5;
+    --color-secondary: #a1a1aa;
+    --color-accent: #de7b43;
+    --color-muted: #71717a;
 
-:root.dark {
-  /* Dark theme */
-  --color-background: #09090b;
-  --color-surface: #18181b;
-  --color-primary: #f4f4f5;
-  --color-secondary: #a1a1aa;
-  --color-accent: #de7b43;
-  --color-muted: #71717a;
+    --color-card-bg: #0b0b0c;
+    --color-card-border: #222224;
+    --color-card-text: #fcf6f0;
+    --color-card-text-muted: #baa393;
+
+    --color-tag-bg: rgba(238, 123, 67, 0.12);
+    --color-tag-border: rgba(222, 123, 67, 0.4);
+    --color-tag-border-hover: #fca474;
+    --color-tag-text: #fca474;
+
+    --color-btn-bg: #e58752;
+    --color-btn-border: #de7b43;
+    --color-btn-shadow: #8f3b0b;
+    --color-btn-text: #09090b;
+    --color-btn-bg-hover: #ff9359;
 }
 
 noise {
-  pointer-events: none;
-  z-index: -1;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeat center center url("/noise.svg");
-  background-size: auto;
-  background-size: 32%;
-  opacity: 0.05;
-  mix-blend-mode: luminosity;
+    pointer-events: none;
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeat center center url("/noise.svg");
+    background-size: 32%;
+    opacity: 0.05;
+    mix-blend-mode: luminosity;
 }

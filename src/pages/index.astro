@@ -20,49 +20,42 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS);
 const projects: Array<{
     title: string;
     description: string;
-    link: string;
-    icon: string;
+    link?: string;
     tags: string[];
-    banner?: string;
+    media?: string;
 }> = [
     {
-        title: "via",
+        title: "⭐ via",
         description:
-            "a modern scripting language designed for correctness, performance, and scalability",
+            "a modern scripting language designed for correctness & performance",
         link: "https://github.com/via-lang/via",
-        icon: "⭐",
         tags: ["rust", "cargo", "PL"],
     },
     {
-        title: "argvx",
+        title: "💻 argvx",
         description: "minimal argument parser for C++23",
-        icon: "💻",
         link: "https://github.com/xnlogical/argvx",
         tags: ["C++", "CMake", "CLI"],
     },
     {
-        title: "SIRF",
+        title: "🌊 SIRF",
         description: "simple intermediate representation format",
-        icon: "🌊",
-        link: "",
         tags: ["rust", "cargo", "PL"],
     },
     {
-        title: "Thugs vs Police",
+        title: "🔫 Thugs vs Police",
         description: "simple & chaotic FPS game made in 9 days",
-        icon: "🔫",
         link: "https://www.roblox.com/games/89186215794284/Thugs-vs-Police",
         tags: ["roblox", "full game"],
-        banner: "https://tr.rbxcdn.com/180DAY-0ad3b7755d937d8cadbdbf38b1461431/768/432/Image/Webp/noFilter",
+        media: "https://tr.rbxcdn.com/180DAY-0ad3b7755d937d8cadbdbf38b1461431/768/432/Image/Webp/noFilter",
     },
     {
-        title: "UFO Race",
+        title: "🛸 UFO Race",
         description:
             "an incremental game where the goal is to go as far as possible",
-        icon: "🛸",
         link: "https://www.roblox.com/games/117834676933040/UFO-Race",
         tags: ["roblox", "full game"],
-        banner: "https://tr.rbxcdn.com/180DAY-1a64db5894d44af4e6c0dcaacdd6e91e/768/432/Image/Png/noFilter",
+        media: "https://tr.rbxcdn.com/180DAY-1a64db5894d44af4e6c0dcaacdd6e91e/768/432/Image/Png/noFilter",
     },
 ];
 ---
@@ -70,7 +63,7 @@ const projects: Array<{
 <BaseLayout navbarActiveItemID="home">
     <main>
         <section id="about" aria-labelledby="about-heading">
-            <Card role="region">
+            <Card class="container">
                 <TerminalHeader title="terminal - ssh guest@terminus" />
 
                 <!-- Content -->
@@ -115,7 +108,7 @@ const projects: Array<{
                                 class="text-accent hover:underline focus:outline-none"
                                 href="mailto:xnlogical@gmail.com"
                                 aria-label="Send email to site author"
-                                >discord • xnlogical (prefered) <br /> email • xnlogical@gmail.com
+                                >xnlogical@gmail.com
                             </a>
                         </InfoRow>
 
@@ -131,22 +124,19 @@ const projects: Array<{
 
         <section id="projects" class="mt-2">
             <Card
-                class="text-secondary"
-                role="region"
+                class="container text-secondary"
                 aria-label="Project showcase"
             >
                 <SectionHeading>my projects</SectionHeading>
                 <div class="space-y-2" role="list">
                     {
-                        projects.map((project, index) => (
+                        projects.map((project, _) => (
                             <ProjectItem
                                 title={project.title}
                                 description={project.description}
                                 link={project.link}
-                                icon={project.icon}
                                 tags={project.tags}
-                                banner={project.banner}
-                                index={index}
+                                media={project.media}
                             />
                         ))
                     }

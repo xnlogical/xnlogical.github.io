@@ -1,42 +1,91 @@
 ---
+import BaseCard from "./ui/Card.astro";
+
 interface Props {
-    title: string;
-    index?: number;
+    term: string;
+    sections: string[];
+    index: number;
+    category?: string;
+    class?: string;
     open?: boolean;
-    children: string[]; // REQUIRED: list of paragraphs / bullets
 }
 
-const { title, index, open = false, children } = Astro.props;
-const number = index !== undefined ? String(index + 1).padStart(2, "0") : null;
+const {
+    term,
+    sections = [],
+    index,
+    category,
+    class: className = "",
+    open = false,
+} = Astro.props;
+const displayNum = String(index + 1).padStart(2, "0");
 ---
 
-<details
-    class="group border border-gray-300/60 dark:border-gray-800/80 rounded transition-colors overflow-hidden bg-white/40 dark:bg-gray-950/40"
-    {...open ? { open: true } : {}}
->
-    <summary
-        class="cursor-pointer select-none flex items-center gap-2 p-3 hover:bg-gray-200/50 dark:hover:bg-gray-900/40 transition-colors"
-    >
-        {
-            number && (
-                <span class="text-muted w-8 shrink-0 font-mono">{number}.</span>
-            )
-        }
-
-        <span class="font-semibold text-secondary group-hover:text-accent">
-            {title}
-        </span>
-
-        <span
-            class="ml-auto text-muted group-open:rotate-90 transition-transform"
+<BaseCard class={`!p-0 ${className}`}>
+    <details class="group w-full block" {...open ? { open: true } : {}}>
+        {/* Compact Summary Header with Active State Tints */}
+        <summary
+            class="cursor-pointer select-none py-1.5 px-3 flex items-center justify-between gap-2.5 hover:bg-[var(--color-tag-bg)]/30 group-open:bg-[var(--color-tag-bg)]/15 transition-colors outline-none border-b border-transparent group-open:border-[var(--color-card-border)]"
         >
-            ▶
-        </span>
-    </summary>
+            <div class="flex items-center gap-2 min-w-0 h-full">
+                {/* Clean Index Indicator */}
+                <span
+                    class="font-mono text-xs font-bold opacity-50 shrink-0 tabular-nums"
+                    style="color: var(--color-tag-text);"
+                >
+                    {displayNum}
+                </span>
 
-    <article
-        class="p-4 text-sm text-muted leading-relaxed border-t border-gray-300/40 dark:border-gray-800/60 space-y-2"
-    >
-        {children.map((line) => <ul>{line}</ul>)}
-    </article>
-</details>
+                {/* Technical Structural Separator */}
+                <span
+                    class="w-[1px] h-3 bg.5 bg-[var(--color-card-border)] opacity-60 shrink-0"
+                ></span>
+
+                {/* High-Readability Term */}
+                <h3
+                    class="font-bold text-sm tracking-tight truncate group-open:text-[var(--color-accent)] transition-colors"
+                    style="color: var(--color-card-text);"
+                >
+                    {term}
+                </h3>
+            </div>
+
+            <div class="flex items-center gap-2.5 shrink-0 h-full">
+                {/* Pill Category Tag */}
+                {
+                    category && (
+                        <span
+                            class="text-[9px] font-mono tracking-wider px-1.5 py-0.5 rounded border border-[var(--color-tag-border)] opacity-80"
+                            style="background: var(--color-tag-bg); color: var(--color-tag-text);"
+                        >
+                            {category}
+                        </span>
+                    )
+                }
+
+                {/* Heavy UTF-8 Geometric Toggle Blocks */}
+                <div
+                    class="w-3.5 h-3.5 flex items-center justify-center font-sans text-[10px] opacity-40 group-open:opacity-100 group-open:text-[var(--color-accent)] transition-all"
+                >
+                    <span class="group-open:hidden">▼</span>
+                    <span class="hidden group-open:inline">▲</span>
+                </div>
+            </div>
+        </summary>
+
+        {/* Dense Text Block Layer */}
+        <article
+            class="px-3 py-2 text-xs leading-relaxed space-y-1.5 bg-black/[0.02] dark:bg-black/10"
+            style="color: var(--color-card-text-muted);"
+        >
+            {sections.map((paragraph) => <p class="max-w-none">{paragraph}</p>)}
+        </article>
+    </details>
+</BaseCard>
+
+<style>
+    summary::-webkit-details-marker,
+    summary::marker {
+        display: none;
+    }
+</style>

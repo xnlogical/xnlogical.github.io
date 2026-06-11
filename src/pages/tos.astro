@@ -107,18 +107,17 @@ const terms: Array<{
 ];
 ---
 
-<BaseLayout navbarActiveItemID="home">
+<BaseLayout navbarActiveItemID="tos">
     <main>
         <section id="about" aria-labelledby="about-heading">
-            <Card role="region">
+            <Card class="container">
                 <SectionHeading as="h1">📝 Terms of Service</SectionHeading>
                 <div class="space-y-2" role="list">
                     {
                         terms.map((term, index) => (
                             <TermsItem
-                                title={term.title}
-                                children={term.children}
-                                open={term.open}
+                                term={term.title}
+                                sections={term.children}
                                 index={index}
                             />
                         ))

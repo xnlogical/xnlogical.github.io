@@ -1,0 +1,52 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type AnchorAttrs = Omit<HTMLAttributes<"a">, "type">;
+type ButtonAttrs = HTMLAttributes<"button">;
+
+interface Props extends AnchorAttrs, ButtonAttrs {
+    class?: string;
+}
+
+const { class: className = "", ...attributes } = Astro.props;
+
+const isLink = attributes.href !== undefined;
+const linkDefaults = isLink
+    ? { target: "_blank", rel: "noopener noreferrer" }
+    : {};
+
+const baseClasses = `
+    inline-flex items-center text-[11px] font-bold px-3 py-1.5 whitespace-nowrap select-none tracking-wide
+    rounded-full border border-[var(--color-btn-border)]
+    bg-gradient-to-b from-[var(--color-btn-bg)] to-[var(--color-btn-border)]
+    text-[var(--color-btn-text)]
+    shadow-[inset_0_1.5px_2px_rgba(255,255,255,0.4),0_3px_6px_-1px_rgba(0,0,0,0.4),0_2px_0_var(--color-btn-shadow)]
+    transition-all duration-150 cubic-bezier(0.2, 0.8, 0.2, 1) will-change-transform
+    hover:-translate-y-[1px] hover:brightness-105
+    hover:shadow-[inset_0_1.5px_2px_rgba(255,255,255,0.5),0_4px_8px_-1px_rgba(0,0,0,0.4),0_3px_0_var(--color-btn-shadow)]
+    active:translate-y-[1.5px] active:brightness-95
+    active:shadow-[inset_0_1.5px_3px_rgba(0,0,0,0.4),0_1px_1px_rgba(0,0,0,0.2),0_0.5px_0_var(--color-btn-shadow)]
+    ${className}
+`
+    .replace(/\s+/g, " ")
+    .trim();
+---
+
+{
+    isLink ? (
+        <a
+            class={baseClasses}
+            {...linkDefaults}
+            {...(attributes as HTMLAttributes<"a">)}
+        >
+            <slot />
+        </a>
+    ) : (
+        <button
+            class={baseClasses}
+            {...(attributes as HTMLAttributes<"button">)}
+        >
+            <slot />
+        </button>
+    )
+}

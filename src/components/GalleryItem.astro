@@ -1,74 +1,94 @@
 ---
+import Tag from "./ui/Tag.astro";
+import BaseCard from "./ui/Card.astro";
+
 interface Props {
     title: string;
-    description: string;
-    link: string;
-    media?: string;
+    caption: string;
+    location?: string;
     tags?: string[];
-    index: number;
+    class?: string;
 }
 
-const { title, description, link, media, tags = [] } = Astro.props;
+const {
+    title,
+    caption,
+    location,
+    tags = [],
+    class: className = "",
+} = Astro.props;
 ---
 
-<a
-    href={link}
-    target="_blank"
-    rel="noopener noreferrer"
-    class="group block rounded-xl overflow-hidden bg-gray-200/50 dark:bg-gray-900/40 hover:scale-[1.01] transition-transform"
->
-    <div class="relative aspect-video w-full overflow-hidden">
-        {
-            media ? (
-                <>
-                    {media.endsWith(".mp4") || media.endsWith(".webm") ? (
-                        <video
-                            src={`/${media}`}
-                            class="w-full h-full object-cover"
-                            muted
-                            loop
-                            playsinline
-                            preload="metadata"
-                            poster={`/${media.replace(/\.(mp4|webm)$/, ".jpg")}`}
-                        />
-                    ) : (
-                        <img
-                            src={`/${media}`}
-                            alt={title}
-                            class="w-full h-full object-cover"
-                            loading="lazy"
-                        />
-                    )}
-                </>
-            ) : null
-        }
-
-        <div
-            class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 via-black/50 to-transparent"
-        >
-            <h3 class="text-white font-semibold text-lg">{title}</h3>
-
-            <p class="text-white/80 text-sm mt-1 line-clamp-2">
-                {description}
-            </p>
-
-            {
-                tags.length > 0 && (
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        {tags.map((tag) => (
-                            <span class="text-xs bg-white/10 text-white px-2 py-0.5 rounded">
-                                #{tag}
-                            </span>
-                        ))}
-                    </div>
-                )
-            }
+<BaseCard class={className}>
+    <Fragment slot="media">
+        <div class="video-safe-wrapper w-full h-full relative group/video">
+            <slot name="media" />
         </div>
+    </Fragment>
+
+    <div class="flex justify-between items-baseline gap-4 mt-1">
+        <h3
+            class="font-bold text-xl tracking-tight truncate"
+            style="color: var(--color-card-text);"
+        >
+            {title}
+        </h3>
+        {
+            location && (
+                <span
+                    class="text-xs font-mono font-bold uppercase tracking-wider shrink-0 select-none opacity-80"
+                    style="color: var(--color-tag-text);"
+                >
+                    @{location}
+                </span>
+            )
+        }
     </div>
-    <script>
-        document.querySelectorAll("video").forEach((v) => {
-            v.addEventListener("mouseenter", () => v.play());
-            v.addEventListener("mouseleave", () => v.pause());
+
+    <p
+        class="text-sm leading-relaxed max-w-prose"
+        style="color: var(--color-card-text-muted);"
+    >
+        {caption}
+    </p>
+
+    {
+        tags.length > 0 && (
+            <Fragment slot="footer">
+                {tags.map((tag) => (
+                    <Tag>{tag}</Tag>
+                ))}
+            </Fragment>
+        )
+    }
+</BaseCard>
+
+<script>
+    function secureVideoPlaybacks() {
+        const videos = document.querySelectorAll(
+            ".video-safe-wrapper video",
+        ) as NodeListOf<HTMLVideoElement>;
+
+        videos.forEach((video) => {
+            video.setAttribute("playsinline", "");
+            video.setAttribute("webkit-playsinline", "");
+
+            if (!video.hasAttribute("preload")) {
+                video.setAttribute("preload", "metadata");
+            }
+
+            if (video.hasAttribute("autoplay")) {
+                video.muted = true;
+                video.setAttribute("muted", "");
+
+                video.play().catch(() => {
+                    video.addEventListener("click", () => video.play(), {
+                        once: true,
+                    });
+                });
+            }
         });
-    </script>
-</a>
+    }
+
+    document.addEventListener("astro:page-load", secureVideoPlaybacks);
+</script>

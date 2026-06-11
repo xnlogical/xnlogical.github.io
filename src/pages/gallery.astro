@@ -7,85 +7,75 @@ import GalleryItem from "../components/GalleryItem.astro";
 
 const gallery: Array<{
     title: string;
-    description: string;
-    link: string;
-    media?: string;
+    caption: string;
+    media: string;
     tags?: string[];
 }> = [
     {
         title: "Placement system",
-        description: "Rust-like placement system",
-        link: "",
+        caption: "Rust-like placement system",
         media: "port-1.mp4",
         tags: ["Roblox"],
     },
     {
         title: "Night/thermal vision",
-        description: "NVGs/TVGs for a combat game",
-        link: "",
+        caption: "NVGs/TVGs for a combat game",
         media: "port-2.mp4",
         tags: ["Roblox"],
     },
     {
         title: "Tank projectile",
-        description: "Animated & functional tank projectiles",
-        link: "",
+        caption: "Animated & functional tank projectiles",
         media: "port-3.mp4",
         tags: ["Roblox"],
     },
     {
         title: "Weapon holster",
-        description: "Simple weapon holstering system",
-        link: "",
+        caption: "Simple weapon holstering system",
         media: "port-4.mp4",
         tags: ["Roblox"],
     },
     {
         title: "Proning system",
-        description: "First-person proning",
-        link: "",
+        caption: "First-person proning",
         media: "port-5.mp4",
         tags: ["Roblox"],
     },
     {
         title: "Tank aiming system",
-        description: "Advanced multi-axial point-to-aim system",
-        link: "",
+        caption: "Advanced multi-axial point-to-aim system",
         media: "port-6.mp4",
         tags: ["Roblox"],
     },
     {
         title: "Battleship camera",
-        description: "Top-down ocean camera",
-        link: "",
+        caption: "Top-down ocean camera",
         media: "port-7.mp4",
         tags: ["Roblox"],
     },
 ];
 ---
 
-<BaseLayout navbarActiveItemID="home">
+<BaseLayout navbarActiveItemID="gallery">
     <main>
         <section id="about" aria-labelledby="about-heading">
-            <Card role="region">
+            <Card class="container">
                 <SectionHeading as="h1">📝 Gallery</SectionHeading>
-                <div
-                    class="bg-gray-200/50 dark:bg-gray-500/10 rounded-lg p-3 mb-4"
-                >
-                    <h1>🖱️ Hover over videos to play</h1>
-                    <h1>⚠️ Refresh page if not loading</h1>
-                </div>
                 <div class="space-y-2" role="list">
                     {
-                        gallery.map((project, index) => (
+                        gallery.map((project, _) => (
                             <GalleryItem
                                 title={project.title}
-                                description={project.description}
-                                link={project.link}
-                                media={project.media}
+                                caption={project.caption}
                                 tags={project.tags}
-                                index={index}
-                            />
+                            >
+                                <video
+                                    src={"/" + project.media}
+                                    controls
+                                    class="w-full h-full object-cover"
+                                    slot="media"
+                                />
+                            </GalleryItem>
                         ))
                     }
                 </div>
