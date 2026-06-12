@@ -10,7 +10,6 @@ interface WizardOption {
     max: number;
     days: number;
     multiplier?: number;
-    nextStep?: string;
 }
 
 interface WizardStep {
@@ -18,85 +17,95 @@ interface WizardStep {
     title: string;
     question: string;
     type: "single" | "multi";
-    nextStep?: string;
     options: WizardOption[];
 }
 
 const wizardSteps: WizardStep[] = [
     {
-        id: "core-platform",
-        title: "Platform Foundation",
-        question: "Select your primary system core configuration architecture:",
+        id: "type",
+        title: "Type",
+        question: "Select the type of work needed:",
         type: "single",
         options: [
             {
-                id: "saas",
-                label: "Multi-tenant SaaS Application",
-                min: 3000,
-                max: 5000,
-                days: 30,
-                nextStep: "addons",
+                id: "patch",
+                label: "Patch/bugfix",
+                min: 50,
+                max: 75,
+                days: 3,
             },
             {
-                id: "mobile",
-                label: "Native Cross-Platform Mobile App",
-                min: 4000,
-                max: 6500,
-                days: 45,
-                nextStep: "addons",
+                id: "system",
+                label: "Game system",
+                min: 120,
+                max: 250,
+                days: 7,
             },
             {
-                id: "marketing",
-                label: "High-Conversion Marketing Hub",
-                min: 1000,
-                max: 1500,
-                days: 12,
-                nextStep: "addons",
+                id: "game",
+                label: "Full game",
+                min: 400,
+                max: 550,
+                days: 21,
             },
         ],
     },
     {
-        id: "addons",
-        title: "System Add-ons",
-        question:
-            "Select engineering packages to inject into the target build:",
-        type: "multi",
-        nextStep: "timeline",
+        id: "complexity",
+        title: "Complexity",
+        question: "Select the complexity of the work needed:",
+        type: "single",
         options: [
             {
-                id: "security",
-                label: "Advanced Penetration Shielding & Auditing",
-                min: 800,
-                max: 1200,
-                days: 5,
+                id: "basic",
+                label: "Low complexity (trivially complex mechanics, e.g. word guessers)",
+                min: 0,
+                max: 0,
+                days: 0,
+                multiplier: 0.8,
             },
             {
-                id: "analytics",
-                label: "Realtime Event Telemetry Matrix",
-                min: 400,
-                max: 600,
+                id: "standard",
+                label: "Standard complexity (standard mechanics, e.g. brainrot)",
+                min: 100,
+                max: 150,
                 days: 3,
+                multiplier: 1,
             },
             {
-                id: "localization",
-                label: "Dynamic Multilingual Translation Engine",
+                id: "high",
+                label: "High complexity (complex mechanics, e.g. FPS)",
                 min: 300,
                 max: 450,
-                days: 4,
+                days: 7,
+                multiplier: 1.2,
+            },
+        ],
+    },
+    {
+        id: "extra",
+        title: "Extra features",
+        question: "Select any extra feature(s):",
+        type: "multi",
+        options: [
+            {
+                id: "data",
+                label: "Data Storage",
+                min: 50,
+                max: 75,
+                days: 1,
             },
         ],
     },
     {
         id: "timeline",
-        title: "Deployment Delivery Velocity",
-        question:
-            "Choose your engineering sprint schedule (Applies multiplier matrix):",
+        title: "Delivery Urgency",
+        question: "Please select the desired urgency package:",
         type: "single",
-        nextStep: "summary",
         options: [
             {
                 id: "standard",
-                label: "Standard Delivery (Normal Sprint Cadence)",
+                label: "Standard Delivery",
                 min: 0,
                 max: 0,
                 days: 0,
@@ -104,19 +113,19 @@ const wizardSteps: WizardStep[] = [
             },
             {
                 id: "expedited",
-                label: "Expedited Delivery (Overtime Sprints)",
-                min: 500,
-                max: 800,
+                label: "Expedited Delivery",
+                min: 150,
+                max: 200,
                 days: -5,
-                multiplier: 1.25,
+                multiplier: 1.1,
             },
             {
                 id: "rush",
-                label: "Critical Rush (24/7 Priority Execution)",
-                min: 1200,
-                max: 2000,
-                days: -10,
-                multiplier: 1.5,
+                label: "Critical Rush",
+                min: 250,
+                max: 400,
+                days: -12,
+                multiplier: 1.25,
             },
         ],
     },
@@ -124,8 +133,8 @@ const wizardSteps: WizardStep[] = [
 ---
 
 <BaseLayout activeNavbarItemID="pricing">
-    <main class="flex justify-center">
-        <Card class="container w-full max-w-2xl px-2">
+    <main class="flex justify-center p-4">
+        <Card class="container w-full max-w-2xl px-4 py-2">
             <div id="wizard-container">
                 <div
                     class="flex items-center gap-1 mb-6 border-b pb-3"
@@ -145,15 +154,16 @@ const wizardSteps: WizardStep[] = [
                     </h3>
                 </div>
 
-                {/* ── ACTIVE INPUT SLOTS ── */}
-                <form id="wizard-form" autocomplete="off">
+                <form
+                    id="wizard-form"
+                    autocomplete="off"
+                    onsubmit="return false;"
+                >
                     {
-                        wizardSteps.map((step) => (
+                        wizardSteps.map((step, idx) => (
                             <div
-                                id={`wizard-step-${step.id}`}
                                 class="wizard-step-panel hidden space-y-4"
-                                data-step-type={step.type}
-                                data-global-next={step.nextStep}
+                                data-step-index={idx}
                             >
                                 <p
                                     class="text-sm font-medium"
@@ -177,14 +187,14 @@ const wizardSteps: WizardStep[] = [
                                                     }
                                                     name={step.id}
                                                     value={opt.id}
+                                                    data-label={opt.label}
                                                     data-min={opt.min}
                                                     data-max={opt.max}
                                                     data-days={opt.days}
                                                     data-multiplier={
                                                         opt.multiplier || 1.0
                                                     }
-                                                    data-next={opt.nextStep}
-                                                    class="w-4 h-4 accent-[var(--color-accent)] bg-black/40 border-[var(--color-card-border)] focus:ring-0"
+                                                    class="wizard-input w-4 h-4 accent-[var(--color-accent)] bg-black/40 border-[var(--color-card-border)] focus:ring-0"
                                                 />
                                                 <div class="flex flex-col">
                                                     <span class="text-xs font-mono text-[var(--color-card-text)]">
@@ -212,9 +222,41 @@ const wizardSteps: WizardStep[] = [
                             </div>
                         ))
                     }
+
+                    {/* ── SUMMARY MANIFEST PANEL ── */}
+                    <div
+                        id="wizard-summary-panel"
+                        class="wizard-step-panel hidden space-y-4"
+                        data-step-index={wizardSteps.length}
+                    >
+                        <p
+                            class="text-sm font-medium text-[var(--color-card-text)]"
+                        >
+                            Review your custom deployment blueprint stack
+                            details below before initialization:
+                        </p>
+                        <div
+                            class="p-4 rounded-xl border space-y-3 bg-[var(--color-surface)]/50 text-xs font-mono"
+                            style="border-color: var(--color-card-border);"
+                        >
+                            <div
+                                class="flex justify-between border-b pb-2"
+                                style="border-color: var(--color-card-border);"
+                            >
+                                <span class="text-[var(--color-muted)]"
+                                    >Configuration Item</span
+                                >
+                                <span class="text-[var(--color-muted)]"
+                                    >Delta Impact</span
+                                >
+                            </div>
+                            <div id="summary-items-container" class="space-y-2">
+                            </div>
+                        </div>
+                    </div>
                 </form>
 
-                {/* ── LIVE MULTI-DIMENSIONAL ESTIMATION PANEL ── */}
+                {/* ── METRICS DISPLAY ── */}
                 <div
                     class="grid grid-cols-2 gap-3 p-4 rounded-xl border mt-8"
                     style="border-color: var(--color-card-border); background-color: var(--color-surface);"
@@ -253,7 +295,12 @@ const wizardSteps: WizardStep[] = [
             </div>
         </Card>
 
-        <script define:vars={{ wizardSteps }}>
+        <script
+            define:vars={{
+                totalStepsCount: wizardSteps.length,
+                stepTitles: wizardSteps.map((s) => s.title),
+            }}
+        >
             function initAdvancedWizard() {
                 const form = document.getElementById("wizard-form");
                 const rangeDisplay =
@@ -264,58 +311,96 @@ const wizardSteps: WizardStep[] = [
                 const nextBtn = document.getElementById("wizard-next-btn");
                 const stepBadge = document.getElementById("step-badge");
                 const stepTitle = document.getElementById("step-title");
+                const summaryItemsContainer = document.getElementById(
+                    "summary-items-container",
+                );
 
                 if (
                     !form ||
                     !rangeDisplay ||
                     !timelineDisplay ||
                     !prevBtn ||
-                    !nextBtn
+                    !nextBtn ||
+                    !stepBadge ||
+                    !stepTitle ||
+                    !summaryItemsContainer
                 )
                     return;
 
-                let stepHistory = [wizardSteps[0].id];
+                let currentIdx = 0;
+                const panels = Array.from(
+                    document.querySelectorAll(".wizard-step-panel"),
+                );
 
-                function renderCurrentState() {
-                    const currentStepId = stepHistory[stepHistory.length - 1];
-                    const currentConfig = wizardSteps.find(
-                        (s) => s.id === currentStepId,
+                function updateUI() {
+                    // Hide all views completely
+                    panels.forEach((p) => p.classList.add("hidden"));
+
+                    // Highlight target active view
+                    const activePanel = panels.find(
+                        (p) => parseInt(p.dataset.stepIndex) === currentIdx,
                     );
+                    if (activePanel) activePanel.classList.remove("hidden");
 
-                    document
-                        .querySelectorAll(".wizard-step-panel")
-                        .forEach((p) => p.classList.add("hidden"));
-
-                    const activePanel = document.getElementById(
-                        `wizard-step-${currentStepId}`,
-                    );
-                    if (!activePanel) {
+                    if (currentIdx === totalStepsCount) {
+                        // Summary View State Configuration
                         stepBadge.textContent = "Complete";
                         stepTitle.textContent =
                             "Final Scope Manifest Calculation";
                         nextBtn.textContent = "Deploy Configuration 🚀";
-                        nextBtn.disabled = true;
-                        return;
+                        prevBtn.disabled = false;
+                        buildSummaryManifest();
+                    } else {
+                        // Standard Input Step State Configuration
+                        stepBadge.textContent = `Step ${(currentIdx + 1).toString().padStart(2, "0")}`;
+                        stepTitle.textContent = stepTitles[currentIdx] || "";
+                        nextBtn.textContent = "Next →";
+                        prevBtn.disabled = currentIdx === 0;
                     }
 
-                    activePanel.classList.remove("hidden");
-
-                    stepBadge.textContent = `Step ${stepHistory.length.toString().padStart(2, "0")}`;
-                    stepTitle.textContent = currentConfig.title;
-
-                    prevBtn.disabled = stepHistory.length === 1;
-                    nextBtn.textContent =
-                        currentConfig.nextStep === "summary" ||
-                        (!currentConfig.nextStep &&
-                            activePanel.querySelector(
-                                "input[data-next='summary']",
-                            ))
-                            ? "<disable>"
-                            : "Next →";
-
-                    nextBtn.disabled = nextBtn.textContent === "<disable>";
-
                     tallyCalculations();
+                }
+
+                function buildSummaryManifest() {
+                    summaryItemsContainer.innerHTML = "";
+                    const checkedElements = form.querySelectorAll(
+                        ".wizard-input:checked",
+                    );
+
+                    checkedElements.forEach((input) => {
+                        const label = input.getAttribute("data-label");
+                        const min = parseFloat(
+                            input.getAttribute("data-min") || "0",
+                        );
+                        const max = parseFloat(
+                            input.getAttribute("data-max") || "0",
+                        );
+                        const days = parseInt(
+                            input.getAttribute("data-days") || "0",
+                        );
+                        const multiplier = parseFloat(
+                            input.getAttribute("data-multiplier") || "1.0",
+                        );
+
+                        let costString =
+                            min === 0 && max === 0
+                                ? "Included"
+                                : `$${min}-$${max}`;
+                        if (multiplier !== 1.0)
+                            costString = `${multiplier}x Fee Modifier`;
+
+                        const row = document.createElement("div");
+                        row.className =
+                            "flex justify-between items-start gap-4 text-[var(--color-card-text)]";
+                        row.innerHTML = `
+                            <span class="text-left max-w-[70%] text-[var(--color-primary)]">↳ ${label}</span>
+                            <div class="text-right flex flex-col items-end">
+                                <span class="text-[var(--color-accent)] font-bold">${costString}</span>
+                                <span class="text-[10px] text-[var(--color-muted)]">${days !== 0 ? (days > 0 ? "+" : "") + days + " Days" : "Standard Speed"}</span>
+                            </div>
+                        `;
+                        summaryItemsContainer.appendChild(row);
+                    });
                 }
 
                 function tallyCalculations() {
@@ -324,16 +409,15 @@ const wizardSteps: WizardStep[] = [
                     let totalDays = 0;
                     let absoluteMultiplier = 1.0;
 
-                    const checkedElements =
-                        form.querySelectorAll("input:checked");
+                    const checkedElements = form.querySelectorAll(
+                        ".wizard-input:checked",
+                    );
 
-                    // Reset borders
                     form.querySelectorAll("label").forEach((l) => {
                         l.style.borderColor = "var(--color-card-border)";
                         l.style.background = "var(--color-surface)";
                     });
 
-                    // Pass 1: Parse Flat Minimums, Maximums, and Timelines
                     checkedElements.forEach((input) => {
                         baseMin += parseFloat(
                             input.getAttribute("data-min") || "0",
@@ -345,13 +429,11 @@ const wizardSteps: WizardStep[] = [
                             input.getAttribute("data-days") || "0",
                         );
 
-                        // Accumulate/Override multiplier factors based on execution options
                         const choiceMultiplier = parseFloat(
                             input.getAttribute("data-multiplier") || "1.0",
                         );
-                        if (choiceMultiplier !== 1.0) {
+                        if (choiceMultiplier !== 1.0)
                             absoluteMultiplier = choiceMultiplier;
-                        }
 
                         const label = input.closest("label");
                         if (label) {
@@ -360,67 +442,68 @@ const wizardSteps: WizardStep[] = [
                         }
                     });
 
-                    // Pass 2: Process Global Multipliers safely across ranges
                     const finalMin = Math.round(baseMin * absoluteMultiplier);
                     const finalMax = Math.round(baseMax * absoluteMultiplier);
-
-                    // Ensure baseline execution limits don't output structurally impossible schedules
                     const safeDays = Math.max(3, totalDays);
 
-                    // Render calculations out to DOM hooks
                     rangeDisplay.textContent = `$${finalMin.toLocaleString()} - $${finalMax.toLocaleString()}`;
                     timelineDisplay.textContent = `${safeDays} Days`;
                 }
 
-                // Navigation Loop Interceptors
                 nextBtn.addEventListener("click", (e) => {
                     e.preventDefault();
-                    const currentStepId = stepHistory[stepHistory.length - 1];
-                    const activePanel = document.getElementById(
-                        `wizard-step-${currentStepId}`,
-                    );
-                    if (!activePanel) return;
 
-                    const selectedInputs =
-                        activePanel.querySelectorAll("input:checked");
-
-                    if (selectedInputs.length === 0) {
-                        activePanel.style.animation = "shake 0.3s ease-in-out";
-                        setTimeout(
-                            () => (activePanel.style.animation = ""),
-                            300,
+                    // If we are currently staring at the summary page, trigger confirmation workflow
+                    if (currentIdx === totalStepsCount) {
+                        alert(
+                            "Configuration deployment initialized successfully!",
                         );
                         return;
                     }
 
-                    let targetNextNode = null;
-                    const stepType = activePanel.dataset.stepType;
+                    const activePanel = panels.find(
+                        (p) => parseInt(p.dataset.stepIndex) === currentIdx,
+                    );
+                    // Explicit fallback fallback check using standard form query selection matching name parameters
+                    const currentInputs = activePanel
+                        ? Array.from(
+                              activePanel.querySelectorAll(".wizard-input"),
+                          )
+                        : [];
+                    const hasSelection = currentInputs.some((i) => i.checked);
 
-                    if (stepType === "single") {
-                        targetNextNode =
-                            selectedInputs[0].getAttribute("data-next");
-                    } else {
-                        targetNextNode = activePanel.dataset.globalNext;
+                    if (!hasSelection) {
+                        if (activePanel) {
+                            activePanel.style.animation =
+                                "shake 0.3s ease-in-out";
+                            setTimeout(
+                                () => (activePanel.style.animation = ""),
+                                300,
+                            );
+                        }
+                        return;
                     }
 
-                    if (targetNextNode) {
-                        stepHistory.push(targetNextNode);
-                        renderCurrentState();
+                    // Advance purely on numerical sequence indexing rules
+                    if (currentIdx < totalStepsCount) {
+                        currentIdx++;
+                        updateUI();
                     }
                 });
 
                 prevBtn.addEventListener("click", (e) => {
                     e.preventDefault();
-                    if (stepHistory.length > 1) {
-                        stepHistory.pop();
-                        renderCurrentState();
+                    if (currentIdx > 0) {
+                        currentIdx--;
+                        updateUI();
                     }
                 });
 
                 form.addEventListener("change", tallyCalculations);
-                renderCurrentState();
+                updateUI();
             }
 
+            // Bind explicitly into Astro lifecycle processing systems
             document.addEventListener("astro:page-load", initAdvancedWizard);
         </script>
 
